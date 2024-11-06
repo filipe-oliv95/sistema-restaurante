@@ -1,6 +1,5 @@
 package com.restaurante.marmitas.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -29,7 +28,6 @@ public class PedidoProduto extends BaseEntity{
     @JoinColumn(name = "id_pedido")
     private Pedido pedido;
     
-    @Column(name="quantidade")
     private Integer quantidade;
 
 }

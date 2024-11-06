@@ -2,9 +2,9 @@ package com.restaurante.marmitas.entity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,29 +23,14 @@ import lombok.ToString;
 public class Cliente extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
-
-    @Column(name="nome")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String nome;
-
-    @Column(name="aniversario")
     private LocalDate aniversario;
-    
-    @Column(name="whatsapp")
     private String whatsapp;
-    
-    @Column(name="rua")
     private String rua;
-    
-    @Column(name="numero")
     private String numero;
-    
-    @Column(name="bairro")
     private String bairro;
-    
-    @Column(name="complemento")
     private String complemento;
     
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.REMOVE)

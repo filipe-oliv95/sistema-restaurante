@@ -1,9 +1,9 @@
 package com.restaurante.marmitas.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,24 +22,15 @@ import lombok.ToString;
 public class Pedido extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
-
-    @Column(name="ordem_chegada")
-    private Integer ordemChegada;
-    
-    @Column(name="forma_entrega")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private int ordemChegada;
     private String formaEntrega;
-    
-    @Column(name="forma_pagamento")
-    private String ruaformaPagamento;
-    
-    @Column(name="confirmacao_entrega")
-    private Boolean confirmacaoEntrega;
+    private String formaPagamento;
+    private boolean confirmacaoEntrega;
 
 	@ManyToOne
-	@JoinColumn(name = "id_cliente_FK", referencedColumnName = "id")
+	@JoinColumn(name = "id_cliente", referencedColumnName = "id")
 	private Cliente cliente;
 	
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.REMOVE)

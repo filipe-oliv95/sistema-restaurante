@@ -1,9 +1,9 @@
 package com.restaurante.marmitas.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,14 +20,9 @@ import lombok.ToString;
 public class Produto extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
-
-    @Column(name="nome")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String nome;
-
-    @Column(name="preco")
     private Double preco;
     
 	@OneToMany(mappedBy = "produto", cascade = CascadeType.REMOVE)
