@@ -3,8 +3,12 @@ package com.restaurante.marmitas.entity;
 import java.util.List;
 import java.util.UUID;
 
+import enums.FormaEntregaEnum;
+import enums.FormaPagamentoEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,8 +29,15 @@ public class Pedido extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private int ordemChegada;
-    private String formaEntrega;
-    private String formaPagamento;
+    
+    // Salvo como número ordinal no bd: 0 para DELIVERY e 1 para RETIRADA.
+    @Enumerated(EnumType.ORDINAL)
+    private FormaEntregaEnum formaEntrega;
+    
+    // Salvo como número ordinal no bd: 0 para PIX, 1 para DINHEIRO, 2 para CREDITO e 3 para DEBITO.
+    @Enumerated(EnumType.ORDINAL)
+    private FormaPagamentoEnum formaPagamento;
+    
     private boolean confirmacaoEntrega;
 
 	@ManyToOne
