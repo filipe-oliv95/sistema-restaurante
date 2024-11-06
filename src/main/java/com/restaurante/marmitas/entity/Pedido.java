@@ -38,7 +38,7 @@ public class Pedido extends BaseEntity{
     @Enumerated(EnumType.ORDINAL)
     private FormaPagamentoEnum formaPagamento;
     
-    private boolean confirmacaoEntrega;
+    private boolean confirmacaoEntrega = false;
 
 	@ManyToOne
 	@JoinColumn(name = "id_cliente", referencedColumnName = "id")
