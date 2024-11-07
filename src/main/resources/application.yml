@@ -24,3 +24,10 @@ spring:
   sql:
     init:
       mode: never
+logging:
+  file:
+    name: logs/produtos.log
+  level:
+    com:
+      restaurante:
+        marmitas: DEBUG
