@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
 	    info = @Info(
-	        title = "Restaurante Marmitas - API de Produtos",
+	        title = "Restaurante Marmitas - API",
 	        description = "API REST para gerenciamento de um restaurante.",
 	        version = "v1",
 	        contact = @Contact(
