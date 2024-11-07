@@ -1,4 +1,4 @@
-package enums;
+package com.restaurante.marmitas.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
