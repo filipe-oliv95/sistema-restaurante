@@ -19,6 +19,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.restaurante.marmitas.dto.response.ErrorResponseDto;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -35,7 +38,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         });
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(
+            ConstraintViolationException ex, WebRequest request) {
+        
+        Map<String, String> validationErrors = new HashMap<>();
 
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            String fieldName = violation.getPropertyPath().toString();
+            String simpleFieldName = fieldName.substring(fieldName.lastIndexOf('.') + 1);
+            String validationMsg = violation.getMessage();
+            validationErrors.put(simpleFieldName, validationMsg);
+        }
+
+        return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+    }
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGlobalException(Exception exception,
                                                                   WebRequest webRequest) {
