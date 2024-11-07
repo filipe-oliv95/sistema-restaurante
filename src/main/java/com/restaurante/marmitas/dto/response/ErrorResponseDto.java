@@ -4,15 +4,25 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data @AllArgsConstructor
+@Schema(name = "ErrorResponse", description = "Schema para lidar com respostas de falha da API")
+@Data
+@AllArgsConstructor
 public class ErrorResponseDto {
 
-    private String apiPath;
-    private HttpStatus errorCode;
-    private String errorMessage;
-    private LocalDateTime errorTime;
+	@Schema(description = "Caminho da API invocado pelo cliente")
+	private String apiPath;
+
+	@Schema(description = "Código de erro representando o erro ocorrido")
+	private HttpStatus errorCode;
+
+	@Schema(description = "Mensagem de erro representando o erro ocorrido")
+	private String errorMessage;
+
+	@Schema(description = "Horário representando quando o erro ocorreu")
+	private LocalDateTime errorTime;
 
 }
