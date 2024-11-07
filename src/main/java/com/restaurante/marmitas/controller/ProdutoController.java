@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
 import com.restaurante.marmitas.dto.response.ResponseDto;
+import com.restaurante.marmitas.interfaces.OrderedValidationGroup;
 import com.restaurante.marmitas.service.IProdutoService;
 
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping(path = "/produtos")
 @AllArgsConstructor
-@Validated
+@Validated(OrderedValidationGroup.class)
 public class ProdutoController {
 
 	private IProdutoService iProdutoService;
