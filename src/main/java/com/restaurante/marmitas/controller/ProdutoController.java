@@ -12,7 +12,6 @@ import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
 import com.restaurante.marmitas.dto.response.ErrorResponseDto;
 import com.restaurante.marmitas.dto.response.ResponseDto;
-import com.restaurante.marmitas.interfaces.OrderedValidationGroup;
 import com.restaurante.marmitas.service.IProdutoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +30,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping(path = "/produtos")
 @AllArgsConstructor
-@Validated(OrderedValidationGroup.class)
+@Validated
 public class ProdutoController {
 
 	private IProdutoService iProdutoService;
@@ -48,5 +47,5 @@ public class ProdutoController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(ProdutoConstants.STATUS_201, ProdutoConstants.MESSAGE_201));
 	}
-
+	
 }

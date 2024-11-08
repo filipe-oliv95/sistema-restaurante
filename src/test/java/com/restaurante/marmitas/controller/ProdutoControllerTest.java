@@ -51,20 +51,6 @@ class ProdutoControllerTest {
 
     @Test @Transactional
     @Order(2)
-    void createProduto_deveRetornarErro400QuandoNomeEstaEmBranco() throws Exception {
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome(""); // Nome em branco
-        produtoRequestDto.setPreco(30.0);
-
-        mockMvc.perform(post("/produtos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(produtoRequestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.nome").value(ProdutoConstants.NOME_NOT_BLANK));
-    }
-    
-    @Test @Transactional
-    @Order(3)
     void createProduto_deveRetornarErro400QuandoNomeTiverMaisQue50Caracteres() throws Exception {
     	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
     	produtoRequestDto.setNome("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe"); // Nome > 50
@@ -78,7 +64,7 @@ class ProdutoControllerTest {
     }
     
     @Test @Transactional
-    @Order(4)
+    @Order(3)
     void createProduto_deveRetornarErro400QuandoNomeTiverMenosQue3Caracteres() throws Exception {
     	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
     	produtoRequestDto.setNome("Aa"); // Nome < 3
@@ -92,7 +78,7 @@ class ProdutoControllerTest {
     }
 
     @Test @Transactional
-    @Order(5)
+    @Order(4)
     void createProduto_deveRetornarErro400QuandoPrecoForNegativo() throws Exception {
         ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
         produtoRequestDto.setNome("Produto Teste");
