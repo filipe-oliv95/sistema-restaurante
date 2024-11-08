@@ -2,8 +2,11 @@ package com.restaurante.marmitas.constants;
 
 public class ProdutoConstants {
 
+	public static final String STATUS_200 = "200";
+	public static final String MESSAGE_200 = "Produto atualizado com sucesso.";
     public static final String STATUS_201 = "201";
     public static final String MESSAGE_201 = "Produto criado com sucesso.";
+    public static final String MESSAGE_404 = "Produto não encontrado com o id: ";
     public static final String NOME_ALREADY_EXIST = "Produto já existente com o nome: ";
     public static final String NOME_NOT_BLANK = "O nome não pode estar em branco.";
     public static final String NOME_SIZE = "O nome deve ter entre 3 e 50 caracteres.";
