@@ -1,22 +1,27 @@
 package com.restaurante.marmitas.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
+import com.restaurante.marmitas.entity.Produto;
 import com.restaurante.marmitas.service.IProdutoService;
+import com.restaurante.marmitas.utils.TestUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -28,8 +33,8 @@ class ProdutoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private IProdutoService produtoService;
+    @MockBean
+    private IProdutoService iProdutoService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -90,5 +95,86 @@ class ProdutoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.preco").value(ProdutoConstants.PRECO_POSITIVE));
     }
-
+    
+    @Test @Transactional
+    @Order(5)
+    void updateProduto_deveRetornarStatus200QuandoProdutoForAtualizadoComSucesso() throws Exception {
+        // Produto existente
+    	Produto produtoExistente = TestUtils.criarProdutoExistente("Produto Existente", 20.0);
+    	UUID produtoId = produtoExistente.getId();
+    	
+    	// Dados recebidos para atualização
+    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
+        produtoRequestDto.setNome("Produto Teste");
+        produtoRequestDto.setPreco(30.0);
+        
+        // Executa o PUT e valida a resposta
+        mockMvc.perform(put("/produtos/{id}", produtoId)
+                .contentType(MediaType.APPLICATION_JSON) 
+                .content(objectMapper.writeValueAsString(produtoRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.statusCode").value(ProdutoConstants.STATUS_200))
+                .andExpect(jsonPath("$.statusMsg").value(ProdutoConstants.MESSAGE_200));
+    }
+    
+    @Test @Transactional
+    @Order(6)
+    void updateProduto_deveRetornarStatus400QuandoNomeTiverMaisQue50Caracteres() throws Exception {
+    	// Produto existente
+    	Produto produtoExistente = TestUtils.criarProdutoExistente("Produto Existente", 20.0);
+    	UUID produtoId = produtoExistente.getId();
+    	
+    	// Dados recebidos para atualização
+    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
+    	produtoRequestDto.setNome("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe"); // Nome > 50
+    	produtoRequestDto.setPreco(30.0);
+    	
+    	// Executa o PUT e valida a resposta
+    	mockMvc.perform(put("/produtos/{id}", produtoId)
+    			.contentType(MediaType.APPLICATION_JSON) 
+    			.content(objectMapper.writeValueAsString(produtoRequestDto)))
+    	.andExpect(status().isBadRequest())
+    	.andExpect(jsonPath("$.nome").value(ProdutoConstants.NOME_SIZE));
+    }
+    
+    @Test @Transactional
+    @Order(7)
+    void updateProduto_deveRetornarErro400QuandoNomeTiverMenosQue3Caracteres() throws Exception {
+    	// Produto existente
+    	Produto produtoExistente = TestUtils.criarProdutoExistente("Produto Existente", 20.0);
+    	UUID produtoId = produtoExistente.getId();
+    	
+    	// Dados recebidos para atualização
+    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
+    	produtoRequestDto.setNome("Aa"); // Nome < 3
+    	produtoRequestDto.setPreco(30.0);
+    	
+    	// Executa o PUT e valida a resposta
+    	mockMvc.perform(put("/produtos/{id}", produtoId)
+    			.contentType(MediaType.APPLICATION_JSON) 
+    			.content(objectMapper.writeValueAsString(produtoRequestDto)))
+    	.andExpect(status().isBadRequest())
+    	.andExpect(jsonPath("$.nome").value(ProdutoConstants.NOME_SIZE));
+    }
+    
+    @Test @Transactional
+    @Order(8)
+    void updateProduto_deveRetornarErro400QuandoPrecoForNegativo() throws Exception {
+    	// Produto existente
+    	Produto produtoExistente = TestUtils.criarProdutoExistente("Produto Existente", 20.0);
+    	UUID produtoId = produtoExistente.getId();
+    	
+    	// Dados recebidos para atualização
+    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
+    	produtoRequestDto.setNome("Produto Teste");
+    	produtoRequestDto.setPreco(-30.0); // Valor negativo
+    	
+    	// Executa o PUT e valida a resposta
+    	mockMvc.perform(put("/produtos/{id}", produtoId)
+    			.contentType(MediaType.APPLICATION_JSON) 
+    			.content(objectMapper.writeValueAsString(produtoRequestDto)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.preco").value(ProdutoConstants.PRECO_POSITIVE));
+    }
+    
 }

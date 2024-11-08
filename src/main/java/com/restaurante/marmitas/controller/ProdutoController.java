@@ -1,9 +1,13 @@
 package com.restaurante.marmitas.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +43,7 @@ public class ProdutoController {
 	@ApiResponses({
 			@ApiResponse(responseCode = "201", description = "CREATED (Criado com sucesso)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
 			@ApiResponse(responseCode = "400", description = "BAD REQUEST (Solicitação Inválida)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
-			@ApiResponse(responseCode = "409", description = "CONFLICT (Conflito - Produto Já Existe)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))) })
+			@ApiResponse(responseCode = "409", description = "CONFLICT (Produto já Existe)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))) })
 	@PostMapping(produces = "application/json")
 	public ResponseEntity<ResponseDto> createProduto(
 			@Parameter @Valid @RequestBody ProdutoRequestDto produtoRequestDto) {
@@ -47,5 +51,19 @@ public class ProdutoController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(ProdutoConstants.STATUS_201, ProdutoConstants.MESSAGE_201));
 	}
-	
+
+	@Operation(summary = "Atualizar Produto", description = "Endpoint para atualizar um produto existente.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "OK (Atualizado com sucesso)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
+			@ApiResponse(responseCode = "400", description = "BAD REQUEST (Solicitação inválida)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
+			@ApiResponse(responseCode = "404", description = "NOT FOUND (Produto não encontrado)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
+			@ApiResponse(responseCode = "409", description = "CONFLICT (Produto com nome já existente)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))), })
+	@PutMapping(value = "/{id}", produces = "application/json")
+	public ResponseEntity<ResponseDto> updateProduto(@Parameter @Valid @RequestBody ProdutoRequestDto produtoRequestDto,
+			@Parameter(description = "UUID do produto", required = true) @PathVariable UUID id) {
+		iProdutoService.updateProduto(produtoRequestDto, id);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(ProdutoConstants.STATUS_200, ProdutoConstants.MESSAGE_200));
+	}
+
 }
