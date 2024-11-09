@@ -1,10 +1,14 @@
 package com.restaurante.marmitas.controller;
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Order;
@@ -19,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
+import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.entity.Produto;
 import com.restaurante.marmitas.service.IProdutoService;
 import com.restaurante.marmitas.utils.TestUtils;
@@ -177,4 +182,19 @@ class ProdutoControllerTest {
         .andExpect(jsonPath("$.preco").value(ProdutoConstants.PRECO_POSITIVE));
     }
     
+    @Test @Transactional
+    @Order(9)
+    void fetchAllProdutos_deveRetornarTodosOsProdutos() throws Exception {
+        ProdutoResponseDto produto1 = TestUtils.criarProdutoResponseDto("Produto A", 21.5);
+        ProdutoResponseDto produto2 = TestUtils.criarProdutoResponseDto("Produto B", 15.0);
+        List<ProdutoResponseDto> produtos = Arrays.asList(produto1, produto2);
+
+        when(iProdutoService.fetchAllProdutos()).thenReturn(produtos);
+
+        mockMvc.perform(get("/produtos")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nome").value("Produto A"))
+                .andExpect(jsonPath("$[1].nome").value("Produto B"));
+    }
 }

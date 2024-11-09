@@ -2,12 +2,16 @@ package com.restaurante.marmitas.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
+import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.entity.Produto;
 import com.restaurante.marmitas.exception.ProductAlreadyExistsException;
 import com.restaurante.marmitas.exception.ResourceNotFoundException;
@@ -145,6 +150,21 @@ class ProdutoServiceTest {
 
         // Verifica que o repositório não tentou salvar o produto
         verify(produtoRepository, never()).save(any(Produto.class));
+    }
+    
+    @Test @Transactional
+    @Order(6)
+    void fetchAllProdutos_deveRetornarTodosOsProdutosOrdenadosPelaDataMaisRecente() {
+    	Produto produto1 = TestUtils.criarProdutoExistente("Produto A", 21.5, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+    	Produto produto2 = TestUtils.criarProdutoExistente("Produto B", 15.0, LocalDateTime.now().minusDays(2), null);
+
+        when(produtoRepository.findAll()).thenReturn(Arrays.asList(produto1, produto2));
+
+        List<ProdutoResponseDto> result = produtoService.fetchAllProdutos();
+
+        assertEquals(2, result.size());
+        assertEquals("Produto A", result.get(0).nome());
+        assertEquals("Produto B", result.get(1).nome());
     }
 
 }

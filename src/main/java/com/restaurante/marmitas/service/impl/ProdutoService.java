@@ -1,11 +1,15 @@
 package com.restaurante.marmitas.service.impl;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
+import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.entity.Produto;
 import com.restaurante.marmitas.exception.ProductAlreadyExistsException;
 import com.restaurante.marmitas.exception.ResourceNotFoundException;
@@ -48,6 +52,18 @@ public class ProdutoService implements IProdutoService {
 		});
 		produtoRepository.save(ProdutoMapper.mapToProduto(produtoRequestDto, produto));
 		log.info("Produto atualizado com sucesso: {}", produtoRequestDto.getNome());
+	}
+
+	@Override
+	public List<ProdutoResponseDto> fetchAllProdutos() {
+		List<Produto> produtos = produtoRepository.findAll();
+		List<ProdutoResponseDto> produtosDto = produtos.stream()
+			    .map(produto -> ProdutoMapper.mapToProdutoResponseDto(produto))
+			    .sorted(Comparator.comparing(
+			            (ProdutoResponseDto produto) -> produto.updatedAt() != null ? produto.updatedAt() : produto.createdAt()
+			        ).reversed())
+			    .collect(Collectors.toList());
+		return produtosDto;
 	}
 
 }

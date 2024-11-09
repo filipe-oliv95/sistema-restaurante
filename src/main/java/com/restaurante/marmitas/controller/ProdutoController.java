@@ -1,10 +1,12 @@
 package com.restaurante.marmitas.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
 import com.restaurante.marmitas.dto.response.ErrorResponseDto;
+import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.dto.response.ResponseDto;
 import com.restaurante.marmitas.service.IProdutoService;
 
@@ -64,6 +67,15 @@ public class ProdutoController {
 		iProdutoService.updateProduto(produtoRequestDto, id);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(ProdutoConstants.STATUS_200, ProdutoConstants.MESSAGE_200));
+	}
+
+	@Operation(summary = "Retorna todos os produtos", description = "Endpoint para retornar informações de todos os produtos.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "OK (Produtos retornados com sucesso)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponseDto.class))) })
+	@GetMapping
+	public ResponseEntity<List<ProdutoResponseDto>> fetchAllProdutos() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(iProdutoService.fetchAllProdutos());
 	}
 
 }

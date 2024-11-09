@@ -1,8 +1,10 @@
 package com.restaurante.marmitas.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
+import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 
 public interface IProdutoService {
 
@@ -19,5 +21,10 @@ public interface IProdutoService {
     * Caso exista, atualiza o produto no bd
     */
    void updateProduto(ProdutoRequestDto produtoRequestDto, UUID id);
+   
+   /**
+    * Retorna uma lista com os dados de todos os produtos
+    */
+   List<ProdutoResponseDto> fetchAllProdutos();
 	
 }
