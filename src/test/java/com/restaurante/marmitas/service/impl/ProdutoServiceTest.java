@@ -3,6 +3,7 @@ package com.restaurante.marmitas.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -155,6 +156,30 @@ class ProdutoServiceTest {
         assertEquals(2, result.size());
         assertEquals("Produto A", result.get(0).nome());
         assertEquals("Produto B", result.get(1).nome());
+    }
+    
+    @Test @Transactional
+    @Order(7)
+    public void testFetchProduto_ProdutoEncontrado() {
+    	Produto produtoExistente = TestUtils.criarProdutoExistente("Produto A", 21.5, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+    	UUID idExistente = produtoExistente.getId();
+        when(produtoRepository.findById(idExistente)).thenReturn(Optional.of(produtoExistente));
+
+        ProdutoResponseDto responseDto = produtoService.fetchProduto(idExistente);
+
+        assertEquals(produtoExistente.getId(), responseDto.id());
+        assertEquals(produtoExistente.getNome(), responseDto.nome());
+        verify(produtoRepository).findById(idExistente);
+    }
+
+    @Test @Transactional
+    @Order(8)
+    public void testFetchProduto_ProdutoNaoEncontrado() {
+    	UUID idNaoExistente = UUID.randomUUID();
+        when(produtoRepository.findById(idNaoExistente)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> produtoService.fetchProduto(idNaoExistente));
+        verify(produtoRepository).findById(idNaoExistente);
     }
 
 }

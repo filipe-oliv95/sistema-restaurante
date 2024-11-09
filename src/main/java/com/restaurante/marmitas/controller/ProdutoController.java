@@ -74,8 +74,16 @@ public class ProdutoController {
 			@ApiResponse(responseCode = "200", description = "OK (Produtos retornados com sucesso)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponseDto.class))) })
 	@GetMapping
 	public ResponseEntity<List<ProdutoResponseDto>> fetchAllProdutos() {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(iProdutoService.fetchAllProdutos());
+		return ResponseEntity.status(HttpStatus.OK).body(iProdutoService.fetchAllProdutos());
+	}
+
+	@Operation(summary = "Retorna um produto pelo id", description = "Endpoint para retornar informações de um produto pelo id.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "OK (Produto retornado com sucesso)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponseDto.class))),
+			@ApiResponse(responseCode = "404", description = "NOT FOUND (Produto não encontrado)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))) })
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<ProdutoResponseDto> fetchProduto(@Parameter(description = "UUID do produto", required = true) @PathVariable UUID id) {
+		return ResponseEntity.status(HttpStatus.OK).body(iProdutoService.fetchProduto(id));
 	}
 
 }

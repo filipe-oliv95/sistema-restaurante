@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProdutoService implements IProdutoService {
 
 	private ProdutoRepository produtoRepository;
-	
+
 	@Override
 	public void createProduto(ProdutoRequestDto produtoRequestDto) {
 		log.debug("Iniciando criação do produto com dados: {}", produtoRequestDto);
@@ -58,12 +58,22 @@ public class ProdutoService implements IProdutoService {
 	public List<ProdutoResponseDto> fetchAllProdutos() {
 		List<Produto> produtos = produtoRepository.findAll();
 		List<ProdutoResponseDto> produtosDto = produtos.stream()
-			    .map(produto -> ProdutoMapper.mapToProdutoResponseDto(produto))
-			    .sorted(Comparator.comparing(
-			            (ProdutoResponseDto produto) -> produto.updatedAt() != null ? produto.updatedAt() : produto.createdAt()
-			        ).reversed())
-			    .collect(Collectors.toList());
+				.map(produto -> ProdutoMapper.mapToProdutoResponseDto(produto))
+				.sorted(Comparator
+						.comparing((ProdutoResponseDto produto) -> produto.updatedAt() != null ? produto.updatedAt()
+								: produto.createdAt())
+						.reversed())
+				.collect(Collectors.toList());
 		return produtosDto;
+	}
+
+	@Override
+	public ProdutoResponseDto fetchProduto(UUID id) {
+		Produto produto = produtoRepository.findById(id).orElseThrow(() -> {
+			log.warn("Produto não encontrado com o ID: {}", id);
+			return new ResourceNotFoundException(ProdutoConstants.MESSAGE_404 + id);
+		});
+		return ProdutoMapper.mapToProdutoResponseDto(produto);
 	}
 
 }

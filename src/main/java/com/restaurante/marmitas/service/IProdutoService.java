@@ -26,5 +26,10 @@ public interface IProdutoService {
     * Retorna uma lista com os dados de todos os produtos
     */
    List<ProdutoResponseDto> fetchAllProdutos();
+   
+   /**
+    * Retorna os dados de um produtos pelo id
+    */
+   ProdutoResponseDto fetchProduto(UUID id);
 	
 }

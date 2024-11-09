@@ -19,12 +19,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restaurante.marmitas.constants.ProdutoConstants;
 import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
 import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.entity.Produto;
+import com.restaurante.marmitas.exception.ResourceNotFoundException;
 import com.restaurante.marmitas.service.IProdutoService;
 import com.restaurante.marmitas.utils.TestUtils;
 
@@ -180,5 +182,32 @@ class ProdutoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nome").value("Produto A"))
                 .andExpect(jsonPath("$[1].nome").value("Produto B"));
+    }
+    
+    @Test @Transactional
+    @Order(10)
+    public void fetchProduto_deveRetornarProdutoEncontrado() throws Exception {
+        ProdutoResponseDto produtoResponse = TestUtils.criarProdutoResponseDto("Produto Teste", 100.0);
+        UUID idExistente = produtoResponse.id();
+
+        when(iProdutoService.fetchProduto(idExistente)).thenReturn(produtoResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/produtos/" + idExistente)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(idExistente.toString()))
+                .andExpect(jsonPath("$.nome").value(produtoResponse.nome()));
+    }
+
+    @Test @Transactional
+    @Order(11)
+    public void fetchProduto_naoDeveRetornarProdutoEncontrado() throws Exception {
+        UUID idNaoExistente = UUID.randomUUID();
+
+        when(iProdutoService.fetchProduto(idNaoExistente)).thenThrow(new ResourceNotFoundException(ProdutoConstants.MESSAGE_404 + idNaoExistente));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/produtos/" + idNaoExistente)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
