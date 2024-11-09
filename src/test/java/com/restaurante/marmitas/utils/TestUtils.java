@@ -3,6 +3,7 @@ package com.restaurante.marmitas.utils;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.restaurante.marmitas.dto.request.ProdutoRequestDto;
 import com.restaurante.marmitas.dto.response.ProdutoResponseDto;
 import com.restaurante.marmitas.entity.Produto;
 
@@ -27,6 +28,12 @@ public class TestUtils {
 		produto.setCreatedAt(createdAt);
 		produto.setUpdatedAt(updatedAt);
 		return produto;
+	}
+	
+	// Método para criar um dto request de produto
+	public static ProdutoRequestDto criarProdutoRequestDto(String nome, double preco) {
+		ProdutoRequestDto produtoDto = new ProdutoRequestDto(nome, preco);
+		return produtoDto;
 	}
 	
 	// Método para criar um dto response de produto

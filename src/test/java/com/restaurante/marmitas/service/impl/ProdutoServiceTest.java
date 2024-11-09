@@ -49,9 +49,7 @@ class ProdutoServiceTest {
     @Test @Transactional
     @Order(1)
     void createProduto_deveSalvarProdutoQuandoNaoExistente() {
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Teste");
-        produtoRequestDto.setPreco(25.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Teste", 25.0);
 
         when(produtoRepository.findByNome(produtoRequestDto.getNome())).thenReturn(Optional.empty());
 
@@ -63,9 +61,7 @@ class ProdutoServiceTest {
     @Test @Transactional
     @Order(2)
     void createProduto_deveRetornarStatus409QuandoProdutoJaExistir() {
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Duplicado");
-        produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Duplicado", 30.0);
 
         Produto produtoExistente = new Produto();
         produtoExistente.setNome(produtoRequestDto.getNome());
@@ -89,9 +85,7 @@ class ProdutoServiceTest {
         when(produtoRepository.findById(produtoExistente.getId())).thenReturn(Optional.of(produtoExistente));
 
         // Dados para a atualização
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Atualizado");
-        produtoRequestDto.setPreco(30.0);
+        ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Atualizado", 30.0);
 
         // Executa a atualização
         produtoService.updateProduto(produtoRequestDto, produtoExistente.getId());
@@ -113,9 +107,7 @@ class ProdutoServiceTest {
         Produto produtoExistenteDois = TestUtils.criarProdutoExistente("Produto Existente 2", 30.0);
         
         // Dados para a atualização
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Existente 2"); // Nome já existente
-        produtoRequestDto.setPreco(40.0);
+        ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Existente 2", 40.0);
         
         // Simula o produto 1 sendo encontrado
         when(produtoRepository.findById(produtoExistenteUm.getId())).thenReturn(Optional.of(produtoExistenteUm));
@@ -136,9 +128,7 @@ class ProdutoServiceTest {
     @Order(5)
     void updateProduto_deveRetornarStatus404QuandoProdutoNaoForEncontrado() {
         // Dados para a atualização
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Atualizado");
-        produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Atualizado", 30.0);
         UUID id = UUID.randomUUID();
 
         // Simula a ausência do produto no repositório

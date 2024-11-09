@@ -47,9 +47,7 @@ class ProdutoControllerTest {
     @Test @Transactional
     @Order(1)
     void createProduto_deveRetornarStatus201QuandoProdutoCriadoComSucesso() throws Exception {
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Teste");
-        produtoRequestDto.setPreco(30.0);
+        ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Teste", 30.0);
         
         mockMvc.perform(post("/produtos")
                 .contentType(MediaType.APPLICATION_JSON) 
@@ -62,9 +60,7 @@ class ProdutoControllerTest {
     @Test @Transactional
     @Order(2)
     void createProduto_deveRetornarErro400QuandoNomeTiverMaisQue50Caracteres() throws Exception {
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-    	produtoRequestDto.setNome("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe"); // Nome > 50
-    	produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe", 30.0);
     	
     	mockMvc.perform(post("/produtos")
     			.contentType(MediaType.APPLICATION_JSON)
@@ -76,9 +72,7 @@ class ProdutoControllerTest {
     @Test @Transactional
     @Order(3)
     void createProduto_deveRetornarErro400QuandoNomeTiverMenosQue3Caracteres() throws Exception {
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-    	produtoRequestDto.setNome("Aa"); // Nome < 3
-    	produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Aa", 30.0);
     	
     	mockMvc.perform(post("/produtos")
     			.contentType(MediaType.APPLICATION_JSON)
@@ -90,10 +84,8 @@ class ProdutoControllerTest {
     @Test @Transactional
     @Order(4)
     void createProduto_deveRetornarErro400QuandoPrecoForNegativo() throws Exception {
-        ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Teste");
-        produtoRequestDto.setPreco(-10.0); // Preço negativo
-
+        ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Teste", -30.0);
+        
         mockMvc.perform(post("/produtos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(produtoRequestDto)))
@@ -109,9 +101,7 @@ class ProdutoControllerTest {
     	UUID produtoId = produtoExistente.getId();
     	
     	// Dados recebidos para atualização
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-        produtoRequestDto.setNome("Produto Teste");
-        produtoRequestDto.setPreco(30.0);
+        ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Teste", 30.0);
         
         // Executa o PUT e valida a resposta
         mockMvc.perform(put("/produtos/{id}", produtoId)
@@ -130,9 +120,7 @@ class ProdutoControllerTest {
     	UUID produtoId = produtoExistente.getId();
     	
     	// Dados recebidos para atualização
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-    	produtoRequestDto.setNome("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe"); // Nome > 50
-    	produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaqwe", -30.0);
     	
     	// Executa o PUT e valida a resposta
     	mockMvc.perform(put("/produtos/{id}", produtoId)
@@ -150,9 +138,7 @@ class ProdutoControllerTest {
     	UUID produtoId = produtoExistente.getId();
     	
     	// Dados recebidos para atualização
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-    	produtoRequestDto.setNome("Aa"); // Nome < 3
-    	produtoRequestDto.setPreco(30.0);
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Aa", 30.0);
     	
     	// Executa o PUT e valida a resposta
     	mockMvc.perform(put("/produtos/{id}", produtoId)
@@ -170,9 +156,7 @@ class ProdutoControllerTest {
     	UUID produtoId = produtoExistente.getId();
     	
     	// Dados recebidos para atualização
-    	ProdutoRequestDto produtoRequestDto = new ProdutoRequestDto();
-    	produtoRequestDto.setNome("Produto Teste");
-    	produtoRequestDto.setPreco(-30.0); // Valor negativo
+    	ProdutoRequestDto produtoRequestDto = TestUtils.criarProdutoRequestDto("Produto Teste", -30.0);
     	
     	// Executa o PUT e valida a resposta
     	mockMvc.perform(put("/produtos/{id}", produtoId)
