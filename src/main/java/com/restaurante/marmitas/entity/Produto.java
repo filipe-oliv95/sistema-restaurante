@@ -24,7 +24,7 @@ public class Produto extends BaseEntity{
     private UUID id;
     private String nome;
     private Double preco;
-    private boolean disponibilidade = true;
+    private boolean disponivel = true;
     
 	@OneToMany(mappedBy = "produto", cascade = CascadeType.REMOVE)
 	private List<PedidoProduto> pedidos;
